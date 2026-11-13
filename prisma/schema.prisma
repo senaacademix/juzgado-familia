@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Rol {
+  JEFE_DESPACHO
+  GESTOR
+}
+
+enum Permiso {
+  RADICAR_EXPEDIENTES
+  ANALIZAR_TUTELAS
+  GENERAR_PROVIDENCIAS
+  APROBAR_PROVIDENCIAS
+  ADMINISTRAR_EQUIPO
+  CONFIGURAR_DESPACHO
+}
+
+model Usuario {
+  id                 String    @id @default(cuid())
+  nombre             String
+  documento          String?
+  cargo              String
+  email              String    @unique
+  password           String    @default("123456")
+  rol                Rol       @default(GESTOR)
+  activo             Boolean   @default(true)
+  permisos           Permiso[]
+  fechaCreacion      DateTime  @default(now())
+  fechaActualizacion DateTime  @updatedAt
+
+  @@map("usuarios")
+}
+
+model CasoTutela {
+  id                 String   @id @default(cuid())
+  radicado           String   @unique
+  clienteNombre      String
+  clienteDocumento   String
+  clienteEmail       String
+  clienteTelefono    String
+  clienteDireccion   String
+  clienteCiudad      String   @default("Medellín, Antioquia")
+  entidadAccionada   String
+  derechoInvocado    String
+  hechosResumen      String
+  fechaRadicacion    String
+  fechaCreacion      DateTime @default(now())
+  fechaActualizacion DateTime @updatedAt
+
+  @@map("casos_tutela")
+}
